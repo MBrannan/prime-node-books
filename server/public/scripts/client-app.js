@@ -7,6 +7,9 @@ $(document).ready(function () {
     $("#book-list").on('click', '.delete', deleteBook);
     // update a book
     $("#book-list").on('click', '.update', updateBook);
+    //select genre
+    $('#genreSelector').on('change', genreSelector)
+
 });
 /**
  * Retrieve books from server and append to DOM
@@ -70,6 +73,21 @@ function deleteBook() {
   });
 }
 
+function genreSelector() {
+  var bookGenre = $('#genreSelector').val()
+console.log(bookGenre);
+  $.ajax({
+    type: 'GET',
+    url: '/books/' + bookGenre,
+    success: function(genre) {
+      appendBooks(genre);
+    },
+    error: function(result) {
+      console.log("could not retrieve genre list");
+    }
+  });
+}
+
 function updateBook() {
   var id = $(this).parent().data('id');
   console.log(id);
@@ -115,7 +133,7 @@ function appendBooks(books) {
     // var year = book.date.getUTCFullYear(book.date);
     // var convertedDate = book.date.toLocaleDateString();//month + '/' + day + '/' + year;
     // console.log(convertedDate);
-
+    console.log(book);
     var convertedDate = book.published.substr(0, 10);
     console.log(convertedDate);
 
@@ -127,7 +145,7 @@ function appendBooks(books) {
     $el.append(newDate);
     $el.append('<input type="number" name="edition" value="' + book.edition + '" />');
     $el.append('<input type="text" name="publisher" value="' + book.publisher + '" />');
-
+    console.log("adding");
     $el.append('<button class="update">Update</button>');
     $el.append('<button class="delete">Delete</button>');
   }

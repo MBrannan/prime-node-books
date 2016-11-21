@@ -55,6 +55,32 @@ router.post('/', function(req, res) {
 
 });
 
+router.get('/:genre', function(req, res) {
+  var genreSelect = req.params.genre;
+  console.log('genre to select ', genreSelect);
+
+  pg.connect(connectionString, function(err, client, done) {
+    if(err) {
+      console.log('connection error: ', err);
+      res.sendStatus(500);
+    }
+
+    client.query(
+      'SELECT * FROM books WHERE genre ILIKE $1;',
+      [genreSelect],
+      function(err, result) {
+        done();
+
+        if(err) {
+          res.sendStatus(500);
+        } else {
+          res.send(result.rows);
+        }
+      }
+    );
+  });
+});
+
 router.delete('/:id', function(req, res) {
   bookID = req.params.id;
 
